@@ -1,5 +1,60 @@
 /* CSS declarations go here */
+
+@media (min-height: 100px) { 
+	#outer{
+
+		min-height: 400px;
+	}
+}
+
+/* Smallest devices (tablets, 768px and up) */
+@media (min-height: 400px) { 
+	#outer{
+
+		min-height: 640px;
+	}
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-height: 700px) { 
+	#outer{
+
+		min-height: 1000px;
+	}
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-height: 1100px) { 
+	#outer{
+
+		min-height: 1500px;
+	}
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-height: 1500px) { 
+	#outer{
+
+		min-height: 2000px;
+	}
+}
+
 .errors p{
 	color: red;
+}
+
+.popular{
+	background-color: cyan;
+	color: black;
+}
+
+.unpopular{
+	background-color: red;
+	color: white;
+}
+
+.neutral{
+	background-color: orange;
+	color: black;
 }
 

@@ -1,7 +1,11 @@
 
 
+
 Template.hello.created = function(){
   Session.set("loginError",  "");
+  $('#outer').removeClass('popular');
+  $('#outer').removeClass('unpopular');
+  $('#outer').removeClass('neutral');
 }
 
 Template.hello.events({
@@ -22,16 +26,16 @@ Template.hello.events({
     var uName = $('#idInput input').val();
 
     if(uName.length > 0){
-        Meteor.loginWithPassword(uName, "1234", function(error){
+      Meteor.loginWithPassword(uName, "1234", function(error){
 
-            if(error){
-              $('#idInput').addClass('has-error');
-              
-              Session.set("loginError", "Whoops I think you typed this wrong.");
-              console.log(error.reason);
-            }
+        if(error){
+          $('#idInput').addClass('has-error');
 
-        });
+          Session.set("loginError", "Whoops I think you typed this wrong.");
+          console.log(error.reason);
+        }
+
+      });
     }
 
     event.preventDefault();
@@ -43,26 +47,68 @@ Template.hello.events({
 Template.hello.loginError = function(){ return Session.get("loginError"); }
 
 
-Template.likenope.target = function(){ return uNames[0]; }
+
 Template.scoreBar.score = function(){ return Meteor.user().profile.score; }
 Template.scoreBar.popularity = function(){ 
 
   var ps = Meteor.user().profile.popularity;
-
+  
 
   switch(ps){
     case 0:
-      return "unpopular";
+    if($('#outer').hasClass('popular'))$('#outer').removeClass('popular');
+    if($('#outer').hasClass('neutral'))$('#outer').removeClass('neutral');
+    if($('#outer').hasClass('unpopular') == false)$('#outer').addClass('unpopular');
+    return "unpopular";
     break;
     case 1:
-      return "neutral";
+    if($('#outer').hasClass('unpopular'))$('#outer').removeClass('unpopular');
+    if($('#outer').hasClass('popular'))$('#outer').removeClass('popular');
+    if($('#outer').hasClass('neutral') == false)$('#outer').addClass('neutral');
+    return "neutral";
     break;
     case 2:
-      return "popular";
+    if($('#outer').hasClass('unpopular'))$('#outer').removeClass('unpopular');
+    if($('#outer').hasClass('neutral'))$('#outer').removeClass('neutral');
+    if($('#outer').hasClass('popular') == false)$('#outer').addClass('popular');
+    return "popular";
     break;
 
   }
 
 
 }
+
+
+Template.likenope.created = function(){setNextTarget();}
+Template.likenope.target = function(){ return Session.get("target"); }
+
+
+
+
+Template.likenope.events({
+  'click button#like':function(){
+
+    setNextTarget();
+    Meteor.call("reconcileScores", Meteor.user(), Session.get("target"), "like");
+    event.preventDefault();
+  },
+
+  'click button#nope':function(){
+
+    setNextTarget();
+    Meteor.call("reconcileScores", Meteor.user(), Session.get("target"), "nope");
+    event.preventDefault();
+  }
+
+})
+
+function setNextTarget(){
+  var u = Meteor.users.find({username: {$ne: Meteor.user().username}}).fetch();
+  var i = Math.round(Math.random() * (u.length-1));
+  Session.set("target", u[i]);
+
+}
+
+
 

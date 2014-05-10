@@ -6,8 +6,11 @@
 </head>
 
 <body>
-	<div class="container">
-		
+
+	<div id="outer" class="container-fluid">
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div class ="col-xs-10">
 
 		{{#if currentUser}}
 			{{>likenope}}
@@ -19,11 +22,10 @@
 		{{else}}
 			{{> hello}}
 		{{/if}}
-		
-
-
-		
+			</div>
+		</div>
 	</div>
+	
 </body>
 
 <template name="hello">

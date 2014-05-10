@@ -3,7 +3,7 @@
 	<div class="row text-center">
 
 		<h3>How do you feel about</h3>
-		<h2>{{target}} ?</h2>
+		<h2>{{target.username}} ?</h2>
 		
 		<br/>
 
@@ -28,7 +28,7 @@
 
 <template name ="scoreBar">
 	<div class = "row">
-		<div class ="well well-sm">
+		
 			<p>you are currently {{popularity}}</p>
 
 			<div class="progress">
@@ -36,6 +36,5 @@
 					{{score}}%
 				</div>
 			</div>
-		</div>
 	</div>
 </template>

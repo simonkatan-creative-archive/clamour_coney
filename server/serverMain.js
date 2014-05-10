@@ -3,12 +3,6 @@ Meteor.startup(function () {
 
 });
 
-Meteor.publish('players', function(user){ 
-
-	return Meteor.users.find({});	
-	
-});
-
 
 Meteor.methods({
 
@@ -28,7 +22,7 @@ Meteor.methods({
 
 	increasePopularity: function(user){
 
-		var ns = user.profile.score + 5;
+		var ns = user.profile.score + 2;
 		var popularity;
 		
 		
@@ -36,7 +30,70 @@ Meteor.methods({
 		Meteor.users.update({username: user.username}, {$set: {'profile.score': ns}});
 		Meteor.users.update({username: user.username}, {$set: {'profile.popularity': getPopularity(ns)}});
 
+	},
+
+	decreasePopularity: function(user){
+
+		var ns = user.profile.score - 2;
+		var popularity;
+		
+		
+
+		Meteor.users.update({username: user.username}, {$set: {'profile.score': ns}});
+		Meteor.users.update({username: user.username}, {$set: {'profile.popularity': getPopularity(ns)}});
+
+	},
+
+	reconcileScores: function(actor, target, action){
+
+		//implement scores here
+		var ap = actor.profile.popularity;
+		var tp = target.profile.popularity;
+
+		var a_outcome, t_outcome;
+
+		//TODO these will need checking
+		
+		if(action == "like"){
+
+			if(ap == tp){
+				a_outcome = 1;
+				t_outcome = 1;
+			}else if(ap < tp){
+				a_outcome = 1;
+				t_outcome = 0;
+			}else if(ap > tp){
+				a_outcome = -1;
+				t_outcome = 1;
+			}
+
+		}else if(action == "nope"){
+
+			if(ap == tp){
+				a_outcome = 0;
+				t_outcome = -1;
+			}else if(ap < tp){
+				a_outcome = -1;
+				t_outcome = 0;
+			}else if(ap > tp){
+				a_outcome = 0;
+				t_outcome = -1;
+			}
+
+		}
+
+		var a_ns = actor.profile.score + a_outcome * 2;
+		var t_ns = target.profile.score + t_outcome * 2;
+
+		Meteor.users.update({username: actor.username}, {$set: {'profile.score': a_ns}});
+		Meteor.users.update({username: actor.username}, {$set: {'profile.popularity': getPopularity(a_ns)}});
+
+		Meteor.users.update({username: target.username}, {$set: {'profile.score': t_ns}});
+		Meteor.users.update({username: target.username}, {$set: {'profile.popularity': getPopularity(t_ns)}});
+
 	}
+
+
 
 	
 });
