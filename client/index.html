@@ -1,0 +1,74 @@
+<head>
+	<title>Clamour</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+	<div class="container">
+		
+		{{#unless currentUser}}
+			{{> hello}}
+		{{/unless}}
+	
+		{{#if currentUser}}
+			{{> preScreen}}
+		{{/if}}
+		
+
+
+		
+	</div>
+</body>
+
+<template name="hello">
+
+
+
+		<div class="page-header text-center">
+			<h1>Clamour</h1>
+			<small>A game of good friends by Simon Katan and Tassos Stevens</small>
+		</div>
+
+
+		<form role="form">
+
+			<div id = "idInput" class="form-group">
+				<p class="help-block">Please login using the secret username on your card ...</p>
+				<label class="sr-only" for="idInput">username</label>
+				<input type ="text" class= "form-control" placeholder="username" />
+			</div>
+			
+			<div class="form-group">
+				<button type="submit" id="login" class="btn btn-lg btn-primary btn-block">login</button>
+			</div>
+
+			{{#if loggingIn}}
+			<div class="text-center">
+				<img src="smallwheel.gif" />
+			</div>
+			{{/if}}
+			<div class="form-group errors text-center">
+				<p>{{loginError}}</p>
+			</div>
+
+		</form>
+
+</template>
+
+<template name="preScreen">
+
+		<div class="text-center">
+			<h1>Welcome</h1>
+			<p>We're almost ready to play ...</p>
+			<p>Remember to keep your username secret.</p>
+		</div>
+
+</template>
+
+
+
+
+
+
