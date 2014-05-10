@@ -1,8 +1,8 @@
 ////////// Shared code (client and server) //////////
 
-var uNames = ["Catchy254", "Funky28", "Smiley20", "Crafty21", "21Hugs"];
+uNames = ["Catchy254", "Funky28", "Smiley20", "Crafty21", "21Hugs"]; //NB globals work differently in meteor
 
-var players = new Meteor.Collection("players");
+players = new Meteor.Collection("players");
 
 Meteor.users.deny({
 	
