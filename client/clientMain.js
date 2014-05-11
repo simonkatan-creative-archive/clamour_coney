@@ -1,10 +1,12 @@
 
 
 
+Deps.autorun(function (){
+  Meteor.subscribe('allPlayers');
+  Meteor.subscribe('notifications');
+});
+
 Template.hello.created = function(){
-
-
- 
 
   Session.set("loginError",  "");
   $('#outer').removeClass('popular');
@@ -98,27 +100,46 @@ Template.likenope.created = function(){setNextTarget();}
 Template.likenope.target = function(){ return Session.get("target"); }
 
 
-
-
 Template.likenope.events({
-  'click button#like':function(){
+  'click #likenope button':function(event){
 
-    setNextTarget();
-    Meteor.call("reconcileScores", Meteor.user(), Session.get("target"), "like");
+    var action = event.target.id;
+
+    Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 2}});
+    Meteor.call("reconcileScores", Meteor.user(), Session.get("target"), action);
+
+    setTimeout(getNotifications,2000);
+  
     event.preventDefault();
   },
 
-  'click button#nope':function(){
 
-    setNextTarget();
-    Meteor.call("reconcileScores", Meteor.user(), Session.get("target"), "nope");
-    event.preventDefault();
-  }
 
 })
 
 
 /*----------------------------------------------------------------------------------------*/
+
+Template.notify.events({
+
+  'click button#ok':function(){
+
+    $('#notify').slideUp(1000, function(){
+
+       getNotifications();
+
+    });
+    event.preventDefault();
+  }
+
+});
+
+Template.notify.notification = function(){
+
+  return Session.get("currentNotification");
+
+}
+
 
 /*---------------------------------------HELPER FUNCTIONS---------------------------------*/
 
@@ -127,14 +148,39 @@ Template.likenope.events({
 UI.registerHelper("isAdmin", function(){ return Session.get("isAdmin")});
 UI.registerHelper("preScreen", function(){ return (Meteor.user().profile.view == 0) });
 UI.registerHelper("likenope", function(){return (Meteor.user().profile.view == 1) });
-UI.registerHelper("notify", function(){return (Meteor.user().profile.view == 2) });
+UI.registerHelper("wait", function(){return (Meteor.user().profile.view == 2) });
+UI.registerHelper("notify", function(){return (Meteor.user().profile.view == 3) });
 
 
 //others
 function setNextTarget(){
-  var u = Meteor.users.find({username: {$ne: Meteor.user().username}}).fetch(); //needs players not all users
+  var u = Meteor.users.find({'profile.role' : 'player',
+                            'profile.status' : {$ne: 'inactive'},
+                            username: {$ne: Meteor.user().username}
+                            }).fetch(); //needs players not all users
   var i = Math.round(Math.random() * (u.length-1));
-  Session.set("target", u[i]);
+  if(u.length > 0){
+    Session.set("target", u[i]);
+  }
+}
+
+function getNotifications(){
+
+  var n = Notifications.find({username: Meteor.user().username}).fetch();
+
+  if(n.length == 0){
+    setNextTarget();
+    Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 1}});   
+    Session.set("currentNotification", "");   
+  }else{
+    Session.set("currentNotification", Notifications.findOne({username: Meteor.user().username}));
+    
+    Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 3}});
+    $('#notify').slideDown(1000, function(){
+        Meteor.call("applyNotification", Session.get("currentNotification"));
+      }
+    )
+  }
 }
 
 

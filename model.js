@@ -11,8 +11,12 @@ Meteor.users.deny({
 });
 
 
+Notifications = new Meteor.Collection("notifications");
 
-function getPopularity(score){
+//NB
+//functions need to be declared as anonymous globals in meteor to be available universally
+
+getPopularity = function(score){
 
 	if(score < 25){
 		return 0;
@@ -25,7 +29,7 @@ function getPopularity(score){
 }
 
 
-function getStatus(popularity){
+getStatus = function(popularity){
 
 	var pstr;
 	switch(popularity){
@@ -37,7 +41,11 @@ function getStatus(popularity){
 	return pstr;
 }
 
+getPlayers = function(){
 
+	return Meteor.users.find({'profile.role':'player'}).fetch();
+
+}
 
 
 

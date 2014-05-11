@@ -2,8 +2,8 @@
 	<div class="row text-center">
 		<h1>Admin Login</h1>
 		<div id = "pwInput" class="form-group">
-			<label class="sr-only" for="pwInput">password</label>
-			<input type ="password" class= "form-control" placeholder="password" />
+			<label class="sr-only" for="pw">password</label>
+			<input id="pw" type ="password" class= "form-control" placeholder="password" />
 		</div>
 
 		<div class="form-group">
@@ -53,10 +53,11 @@
   				<td>{{username}}</td>
   				<td>{{profile.view}}</td>
   				<td>{{profile.score}}</td>
-  				<td>numNotifications</td>
+  				<td>{{numNotifications}}</td>
   				</tr>
   				{{/each}}
   			</tbody>
 		</table>
 	</div>
+
 </template>

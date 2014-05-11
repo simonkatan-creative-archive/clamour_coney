@@ -22,23 +22,28 @@
 
 				{{#if preScreen}}
 					{{>preScreen}}
+				{{else}}
+					{{>scoreBar}}
 				{{/if}}
+
 
 				{{#if notify}}
 					{{>notify}}
-					{{>scoreBar}}
 				{{/if}}
 
 				{{#if likenope}}
 					{{>likenope}}
-					{{>scoreBar}}
+				{{/if}}
+
+				{{#if wait}}
+					{{>wait}}
 				{{/if}}
 				
 			{{else}}
 				{{> hello}}
 			{{/if}}
 		{{/if}}
-		
+
 			</div>
 		</div>
 	</div>

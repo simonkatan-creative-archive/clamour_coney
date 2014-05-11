@@ -1,6 +1,6 @@
 Template.adminLogin.events({
 
-  'focus #idInput input':function(){
+  'focus #pwInput input':function(){
 
     Session.set("loginError", "");
     if($('#pwInput').hasClass("has-error")){
@@ -20,7 +20,7 @@ Template.adminLogin.events({
         Meteor.loginWithPassword("kimonsatan", pw, function(error){
 
           if(error){
-            $('#idInput').addClass('has-error');
+            $('#pwInput').addClass('has-error');
 
             Session.set("loginError", error.reason);
             console.log(error.reason);
@@ -36,6 +36,9 @@ Template.adminLogin.events({
 
 });
 
+Template.adminLogin.loginError = function(){ return Session.get("loginError"); }
+
+/*---------------------------------------------------------------------------------------------*/
 
 Template.admin.events({
 
@@ -61,4 +64,7 @@ Template.admin.events({
 
 });
 
-Template.admin.players = function(){return Meteor.users.find({username: {$ne: "kimonsatan"}}).fetch();}
+Template.admin.players = function(){return getPlayers();}
+Template.admin.numNotifications = function(){
+  return Notifications.find({username: this.username}).fetch().length;
+}
