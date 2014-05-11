@@ -26,15 +26,40 @@
 
 </template>
 
-<template name ="scoreBar">
-	<div class = "row">
-		
-			<p>you are currently {{popularity}}</p>
+<template name="notify">
 
-			<div class="progress">
-				<div class="progress-bar" role="progressbar" aria-valuenow={{score}} aria-valuemin="0" aria-valuemax="100" style="width:{{score}}%;">
-					{{score}}%
-				</div>
-			</div>
+	<div class="row text-center">
+		{{notification}}
 	</div>
+
+</template>
+
+<template name ="scoreBar">
+	<div class = "well well-sm info">
+			
+			<p>you are currently {{popularity}}</p>
+				<div class="progress progress-striped active">
+					<div class="progress">
+					<div class="progress-bar" role="progressbar" aria-valuenow={{score}} aria-valuemin="0" aria-valuemax="100" style="width:{{score}}%;">
+						{{score}}%
+					</div>
+					</div>
+				</div>
+			
+			<div class="col-xs-3 unpopular slither">
+				
+			</div>
+			<div class="col-xs-6 neutral slither">
+				
+			</div>
+			<div class="col-xs-3 popular slither">
+				
+			</div>
+			<br/>
+
+	</div>
+
+
+			{{currentUser.username}}
+
 </template>

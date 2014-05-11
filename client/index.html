@@ -1,27 +1,44 @@
 <head>
 	<title>Clamour</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
-
+	
 </head>
 
 <body>
-
 	<div id="outer" class="container-fluid">
 		<div class="row">
 			<div class="col-xs-1"></div>
 			<div class ="col-xs-10">
 
-		{{#if currentUser}}
-			{{>likenope}}
-			{{>scoreBar}}
-			
-			{{!-- {{> preScreen}} --}}
-		
-
+		{{#if isAdmin}}
+			{{#if currentUser}}
+				{{>admin}}
+			{{else}}
+				{{>adminLogin}}
+			{{/if}}
 		{{else}}
-			{{> hello}}
+			{{#if currentUser}}
+
+				{{#if preScreen}}
+					{{>preScreen}}
+				{{/if}}
+
+				{{#if notify}}
+					{{>notify}}
+					{{>scoreBar}}
+				{{/if}}
+
+				{{#if likenope}}
+					{{>likenope}}
+					{{>scoreBar}}
+				{{/if}}
+				
+			{{else}}
+				{{> hello}}
+			{{/if}}
 		{{/if}}
+		
 			</div>
 		</div>
 	</div>

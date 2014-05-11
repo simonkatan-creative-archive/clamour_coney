@@ -2,6 +2,10 @@
 
 
 Template.hello.created = function(){
+
+
+ 
+
   Session.set("loginError",  "");
   $('#outer').removeClass('popular');
   $('#outer').removeClass('unpopular');
@@ -26,16 +30,24 @@ Template.hello.events({
     var uName = $('#idInput input').val();
 
     if(uName.length > 0){
-      Meteor.loginWithPassword(uName, "1234", function(error){
 
-        if(error){
-          $('#idInput').addClass('has-error');
+      if(uName == "kimonsatan"){
+        Session.set("isAdmin", true);
+      }else{
+        Meteor.loginWithPassword(uName, "1234", function(error){
 
-          Session.set("loginError", "Whoops I think you typed this wrong.");
-          console.log(error.reason);
-        }
+          if(error){
+            $('#idInput').addClass('has-error');
 
-      });
+            Session.set("loginError", "Whoops I think you typed this wrong.");
+            console.log(error.reason);
+          }else{
+
+            Meteor.users.update(Meteor.user()._id, {$set: {'profile.status': 'pending'}});
+          }
+
+        });
+      }
     }
 
     event.preventDefault();
@@ -46,7 +58,7 @@ Template.hello.events({
 
 Template.hello.loginError = function(){ return Session.get("loginError"); }
 
-
+/*---------------------------------------------------------------------------------------*/
 
 Template.scoreBar.score = function(){ return Meteor.user().profile.score; }
 Template.scoreBar.popularity = function(){ 
@@ -79,6 +91,8 @@ Template.scoreBar.popularity = function(){
 
 }
 
+/*----------------------------------------------------------------------------------------*/
+
 
 Template.likenope.created = function(){setNextTarget();}
 Template.likenope.target = function(){ return Session.get("target"); }
@@ -103,11 +117,24 @@ Template.likenope.events({
 
 })
 
+
+/*----------------------------------------------------------------------------------------*/
+
+/*---------------------------------------HELPER FUNCTIONS---------------------------------*/
+
+//navigation
+
+UI.registerHelper("isAdmin", function(){ return Session.get("isAdmin")});
+UI.registerHelper("preScreen", function(){ return (Meteor.user().profile.view == 0) });
+UI.registerHelper("likenope", function(){return (Meteor.user().profile.view == 1) });
+UI.registerHelper("notify", function(){return (Meteor.user().profile.view == 2) });
+
+
+//others
 function setNextTarget(){
-  var u = Meteor.users.find({username: {$ne: Meteor.user().username}}).fetch();
+  var u = Meteor.users.find({username: {$ne: Meteor.user().username}}).fetch(); //needs players not all users
   var i = Math.round(Math.random() * (u.length-1));
   Session.set("target", u[i]);
-
 }
 
 

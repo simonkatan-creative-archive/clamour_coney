@@ -58,3 +58,21 @@
 	color: black;
 }
 
+.info{
+	background-color: #666;
+	color: white;
+}
+
+.slither{
+	min-height: 3px;
+}
+
+
+.inactive{
+	background-color: #666;
+}
+
+.active{
+	background-color: #FFF;
+}
+

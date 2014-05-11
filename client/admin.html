@@ -1,0 +1,62 @@
+<template name="adminLogin">
+	<div class="row text-center">
+		<h1>Admin Login</h1>
+		<div id = "pwInput" class="form-group">
+			<label class="sr-only" for="pwInput">password</label>
+			<input type ="password" class= "form-control" placeholder="password" />
+		</div>
+
+		<div class="form-group">
+			<button type="submit" id="login" class="btn btn-lg btn-primary btn-block">login</button>
+		</div>
+
+		{{#if loggingIn}}
+		<div class="text-center">
+			<img src="smallwheel.gif" />
+		</div>
+		{{/if}}
+		<div class="form-group errors text-center">
+			<p>{{loginError}}</p>
+		</div>
+
+	</div>
+</template>
+
+
+<template name="admin">
+	<div class="row text-center">
+		<h1>Clamour Admin</h1>
+	</div>
+		
+	<div class = "row">
+		<div class="form-group">
+			<button type="submit" id="start" class="btn btn-lg btn-success">start game</button>
+			<button type="submit" id="reset" class="btn btn-lg btn-warning">reset game</button>
+		</div>
+	</div>
+
+	<div class="row text-center">
+		<h3>All players</h3>
+		<table class="table table-bordered">
+  			<thead>
+  				<tr>
+  				<th>username</th>
+  				<th>view</th>
+  				<th>score</th>
+  				<th>numNotifications</th>
+  				</tr>
+  			</thead>
+
+  			<tbody>
+  			 	{{#each players}}
+  				<tr class="{{profile.status}}">
+  				<td>{{username}}</td>
+  				<td>{{profile.view}}</td>
+  				<td>{{profile.score}}</td>
+  				<td>numNotifications</td>
+  				</tr>
+  				{{/each}}
+  			</tbody>
+		</table>
+	</div>
+</template>

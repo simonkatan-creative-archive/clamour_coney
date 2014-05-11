@@ -12,6 +12,30 @@ Meteor.users.deny({
 
 
 
+function getPopularity(score){
+
+	if(score < 25){
+		return 0;
+	}else if(score < 75){
+		return 1;
+	}else{
+		return 2;
+	}
+
+}
+
+
+function getStatus(popularity){
+
+	var pstr;
+	switch(popularity){
+		case 0: pstr = "unpopular"; break;
+		case 1: pstr = "neutral"; break;
+		case 2: pstr = "popular"; break;
+	}
+
+	return pstr;
+}
 
 
 
