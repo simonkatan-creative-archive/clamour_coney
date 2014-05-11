@@ -58,6 +58,11 @@ Template.hello.events({
 
 });
 
+Template.preScreen.created = function(){
+
+  window.scrollTo(0,0);
+}
+
 Template.hello.loginError = function(){ return Session.get("loginError"); }
 
 /*---------------------------------------------------------------------------------------*/
@@ -108,8 +113,9 @@ Template.likenope.events({
     Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 2}});
     Meteor.call("reconcileScores", Meteor.user(), Session.get("target"), action);
 
+
     setTimeout(getNotifications,2000);
-  
+
     event.preventDefault();
   },
 
@@ -126,9 +132,9 @@ Template.notify.events({
 
     $('#notify').slideUp(1000, function(){
 
-       getNotifications();
+     getNotifications();
 
-    });
+   });
     event.preventDefault();
   }
 
@@ -140,6 +146,11 @@ Template.notify.notification = function(){
 
 }
 
+/*---------------------------------------------------------------------------------------*/
+
+Template.wait.popular = function(){return (Meteor.user().profile.popularity == 2)};
+Template.wait.unpopular = function(){return (Meteor.user().profile.popularity == 0)};
+Template.wait.neutral = function(){return Meteor.user().profile.popularity == 1};
 
 /*---------------------------------------HELPER FUNCTIONS---------------------------------*/
 
@@ -154,13 +165,32 @@ UI.registerHelper("notify", function(){return (Meteor.user().profile.view == 3) 
 
 //others
 function setNextTarget(){
+
+
   var u = Meteor.users.find({'profile.role' : 'player',
-                            'profile.status' : {$ne: 'inactive'},
-                            username: {$ne: Meteor.user().username}
+    'profile.status' : {$ne: 'inactive'},
+    username: {$ne: Meteor.user().username}
                             }).fetch(); //needs players not all users
-  var i = Math.round(Math.random() * (u.length-1));
-  if(u.length > 0){
-    Session.set("target", u[i]);
+
+
+  //now filter out any players who already have notifications from the user
+  var uf = [];
+
+  for(var i = 0; i < u.length; i++){
+   if(Notifications.find({username: u[i].username, actor: Meteor.user().username}).fetch().length == 0){
+    uf.push(u[i]);
+  }
+}
+
+var i = Math.round(Math.random() * (uf.length-1));
+if(uf.length > 0){
+  Session.set("target", uf[i]);
+  return true;
+}else{
+    //set a time out to try again
+    console.log("no available players");
+    return false;
+
   }
 }
 
@@ -169,17 +199,48 @@ function getNotifications(){
   var n = Notifications.find({username: Meteor.user().username}).fetch();
 
   if(n.length == 0){
-    setNextTarget();
-    Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 1}});   
-    Session.set("currentNotification", "");   
+
+    var proceed = false;
+
+    Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 2}});   
+    
+    var gt = setInterval(function(){
+
+      if(setNextTarget() == true){
+        console.log("clearInterval")
+        clearInterval(gt);
+        Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 1}});   
+        Session.set("currentNotification", "");   
+      }else{
+        console.log("fail");
+      }
+
+    },500);
+    
+
   }else{
+
     Session.set("currentNotification", Notifications.findOne({username: Meteor.user().username}));
     
-    Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 3}});
-    $('#notify').slideDown(1000, function(){
-        Meteor.call("applyNotification", Session.get("currentNotification"));
-      }
-    )
+
+    if(Meteor.user().profile.view != 3){
+      Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 3}}, function(){
+
+        setTimeout(function() {
+
+          $('#notify').slideDown(1000, function(){Meteor.call("applyNotification", Session.get("currentNotification"))});
+
+        }, 50); //a little time to create the elements
+        
+
+      });
+    }else{
+
+        $('#notify').slideDown(1000, function(){Meteor.call("applyNotification", Session.get("currentNotification"))});
+
+    }
+
+    
   }
 }
 

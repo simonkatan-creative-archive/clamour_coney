@@ -127,7 +127,7 @@ Meteor.methods({
 
 		if(t_outcome != 0){
 			var n = actor.username + " just " + action + "d you and " + ((t_outcome > 0) ? "increased" : "decreased" ) +  " your popularity.";
-			Notifications.insert({username: target.username, message: n, incr: t_incr});
+			Notifications.insert({username: target.username, actor: actor.username, message: n, incr: t_incr});
 		}
 
 		Meteor.users.update({username: actor.username}, {$set: {'profile.score': a_ns}});

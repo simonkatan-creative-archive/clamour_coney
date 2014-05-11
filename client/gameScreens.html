@@ -68,3 +68,19 @@
 
 
 </template>
+
+<template name ="wait">
+
+	<div class ="row text-center">
+		{{#if popular}}
+			<img src="turqLoader.gif" />
+		{{/if}}
+		{{#if unpopular}}
+			<img src="redLoader.gif" />
+		{{/if}}
+		{{#if neutral}}
+			<img src="orangeLoader.gif" />
+		{{/if}}
+	</div>
+
+</template>

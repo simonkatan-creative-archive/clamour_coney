@@ -44,17 +44,17 @@
 }
 
 .popular{
-	background-color: cyan;
+	background-color: #40E0D0; /*turquoise*/
 	color: black;
 }
 
 .unpopular{
-	background-color: red;
+	background-color: #FF0000; /*red*/
 	color: white;
 }
 
 .neutral{
-	background-color: orange;
+	background-color: #FFA500; /*orange*/
 	color: black;
 }
 
