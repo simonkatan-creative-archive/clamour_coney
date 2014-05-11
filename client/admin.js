@@ -58,6 +58,24 @@ Template.admin.events({
       console.log("aborted");
     }
     event.preventDefault();
+  },
+
+  'click button#apply' : function(){
+
+    var el = $('.reward input[type=checkbox]:checked').get();
+    var t_users = [];
+
+    for(var i = 0; i < el.length; i++){
+      console.log(el[i].id);
+      t_users.push(Meteor.users.findOne({username: el[i].id}));
+    }
+
+    $('.reward input[type=checkbox]').attr('checked', false);    
+
+    Meteor.call('applyReward', t_users, $('select#amount').val());
+
+
+    event.preventDefault();
   }
 
 

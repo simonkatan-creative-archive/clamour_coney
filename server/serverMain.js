@@ -56,25 +56,26 @@ Meteor.methods({
 	
 	},
 
-	increasePopularity: function(user){
+	applyReward: function(users, amount){
 
-		var ns = user.profile.score + 2;
-		var popularity = getPopularity(ns);
-		var pstr = getStatus(popularity);
+		var ns, popularity, pstr;
 
-		Meteor.users.update({username: user.username}, {$set: {'profile.score': ns}});
-		Meteor.users.update({username: user.username}, {$set: {'profile.popularity': popularity, 'profile.status': pstr}});
+		for(var i = 0; i < users.length; i++){
+			
+			ns = users[i].profile.score + parseInt(amount);
+			Math.min(100, ns);
+			ns = Math.max(0, ns);
 
-	},
+			popularity = getPopularity(ns);
+			pstr = getStatus(popularity);
 
-	decreasePopularity: function(user){
+			Meteor.users.update({username: users[i].username}, {$set: {'profile.score': ns, 
+																	'profile.popularity': popularity, 
+																	'profile.status': pstr,
+																	'profile.view': 5}}
+								);
 
-		var ns = user.profile.score - 2;
-		var popularity;
-	
-
-		Meteor.users.update({username: user.username}, {$set: {'profile.score': ns}});
-		Meteor.users.update({username: user.username}, {$set: {'profile.popularity': getPopularity(ns)}});
+		}
 
 	},
 
@@ -87,6 +88,8 @@ Meteor.methods({
 		var a_outcome, t_outcome;
 		
 		if(action == "like"){
+
+			Meteor.users.update({username: actor.username}, {$incr: {'profile.likes': 1}});
 
 			if(ap == tp){
 				//if like someone of same status
@@ -103,6 +106,8 @@ Meteor.methods({
 			}
 
 		}else if(action == "nope"){
+
+			Meteor.users.update({username: actor.username}, {$incr: {'profile.nopes': 1}});
 
 			if(ap == tp){
 				//nope someone of the same status
@@ -122,6 +127,7 @@ Meteor.methods({
 		}
 
 		var a_ns = actor.profile.score + a_outcome * 2;
+		a_ns = Math.min(100, Math.max(0,a_ns));
 		var t_incr = t_outcome * 2;
 		var a_pop = getPopularity(a_ns);
 
@@ -139,7 +145,9 @@ Meteor.methods({
 	applyNotification: function(notification){
 
 		var t_ns = Meteor.users.findOne({username: notification.username}).profile.score + notification.incr;
+		t_ns = Math.min(100, Math.max(0,t_ns));
 		var t_pop = getPopularity(t_ns);
+
 
 		Meteor.users.update({username: notification.username}, {$set: {'profile.score': t_ns}});
 		Meteor.users.update({username: notification.username}, {$set: {'profile.popularity': t_pop, 'profile.status': getStatus(t_pop)}});

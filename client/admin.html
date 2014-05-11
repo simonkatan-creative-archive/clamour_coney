@@ -12,7 +12,7 @@
 
 		{{#if loggingIn}}
 		<div class="text-center">
-			<img src="smallwheel.gif" />
+			<img src="whiteLoader.gif" />
 		</div>
 		{{/if}}
 		<div class="form-group errors text-center">
@@ -27,41 +27,75 @@
 	<div class="row text-center">
 		<h1>Clamour Admin</h1>
 	</div>
-		
-	<div class = "row">
-		<div class="form-group">
-			<button type="submit" id="start" class="btn btn-lg btn-success">start game</button>
-			<button type="submit" id="reset" class="btn btn-lg btn-warning">reset game</button>
-			<!--//TODO add daytime checkbox
-			//TODO add current reward num box
-			//	   add reward checkbox column
-			//     add apply  reward button-->
 
-		</div>
+
+	<div class = "row">
+		<form class="form-inline" role="form">
+			<div class="form-horizontal">
+				<div class="col-xs-4">
+					<button type="submit" id="start" class="btn btn-lg btn-success">start game</button>
+					<button type="submit" id="reset" class="btn btn-lg btn-danger">reset game</button>
+				</div>
+				<div class="col-xs-4">
+					<div class="radio">
+						<label>
+							<input type="radio" name="optionsRadios" id="dayTime" value="dayTime" checked>
+							day time
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="optionsRadios" id="nightTime" value="nightTime">
+							night time
+						</label>
+					</div>
+				</div>
+				
+				<label>rewards amount </label>
+				<select class="form-control" id="amount">
+					<option>-10</option>
+					<option>-5</option>
+					<option>-3</option>
+					<option>-1</option>
+					<option>1</option>
+					<option>3</option>
+					<option>5</option>
+					<option>10</option>
+				</select>
+				<button type="submit" id="apply" class="btn btn-lg btn-info">apply</button>
+			</div>
+		</form>
 	</div>
+
 
 	<div class="row text-center">
 		<h3>All players</h3>
 		<table class="table table-bordered">
-  			<thead>
-  				<tr>
-  				<th>username</th>
-  				<th>view</th>
-  				<th>score</th>
-  				<th>numNotifications</th>
-  				</tr>
-  			</thead>
+			<thead>
+				<tr>
+					<th>username</th>
+					<th>view</th>
+					<th>score</th>
+					<th>numNotifications</th>
+					<th>likes</th>
+					<th>nopes</th>
+					<th>selectForReward</th>
+				</tr>
+			</thead>
 
-  			<tbody>
-  			 	{{#each players}}
-  				<tr class="{{profile.status}}">
-  				<td>{{username}}</td>
-  				<td>{{profile.view}}</td>
-  				<td>{{profile.score}}</td>
-  				<td>{{numNotifications}}</td>
-  				</tr>
-  				{{/each}}
-  			</tbody>
+			<tbody>
+				{{#each players}}
+				<tr class="{{profile.status}}">
+					<td>{{username}}</td>
+					<td>{{profile.view}}</td>
+					<td>{{profile.score}}</td>
+					<td>{{numNotifications}}</td>
+					<td>{{profile.likes}}</td>
+					<td>{{profile.nopes}}</td>
+					<td><div class="checkbox reward"><label><input type="checkbox" id="{{username}}"/></label></div></td>
+				</tr>
+				{{/each}}
+			</tbody>
 		</table>
 	</div>
 
