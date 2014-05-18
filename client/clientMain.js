@@ -1,17 +1,36 @@
 
-
+var preIndex = 0;
+var preSwitcher;
 
 Deps.autorun(function (){
   Meteor.subscribe('allPlayers');
   Meteor.subscribe('notifications');
+
+  if(! Meteor.user()){
+    Session.set("isAdmin", false);
+  }else{
+    if(Meteor.user().profile.role == 'admin'){
+        Session.set("isAdmin", true);
+        console.log("admin");
+    }else{
+      Session.set("isAdmin", false);
+    }
+  }
 });
 
 Template.hello.created = function(){
 
+
   Session.set("loginError",  "");
+  Session.set("currentNotification", "");
+  Session.set("preMessage", "");
+ 
   $('#outer').removeClass('popular');
   $('#outer').removeClass('unpopular');
   $('#outer').removeClass('neutral');
+  $('#outer').removeClass('daytimeReward');
+  $('#outer').removeClass('daytime');
+
 }
 
 Template.hello.events({
@@ -32,6 +51,8 @@ Template.hello.events({
     var uName = $('#idInput input').val();
 
     if(uName.length > 0){
+
+      uName = uName.toLowerCase();
 
       if(uName == "kimonsatan"){
         Session.set("isAdmin", true);
@@ -60,14 +81,47 @@ Template.hello.events({
 
 Template.preScreen.created = function(){
 
+  preIndex = 0;
+  Session.set("preMessage", "Welcome !");
   window.scrollTo(0,0);
+
+  preSwitcher = window.setInterval(function(){
+
+    preIndex = (preIndex + 1)%5;
+
+    switch(preIndex){
+      case 0: Session.set("preMessage", "Welcome !"); break;
+      case 1: Session.set("preMessage", "We're almost ready to play Clamour"); break;
+      case 2: Session.set("preMessage", "A game of good friends"); break;
+      case 3: Session.set("preMessage", "Remember to keep your user name secret"); break;
+      case 4: Session.set("preMessage", "It's on the card in your pocket"); break;
+    }
+    
+
+  
+
+  }, 4000);
+  
+
 }
+
+Template.preScreen.destroyed = function(){
+
+  window.clearInterval(preSwitcher);
+
+}
+
+Template.preScreen.message = function(){return Session.get('preMessage'); }
 
 Template.hello.loginError = function(){ return Session.get("loginError"); }
 
 /*---------------------------------------------------------------------------------------*/
 
-Template.scoreBar.created = function(){$('#outer').removeClass('daytime');}
+Template.scoreBar.created = function(){
+
+  $('#outer').removeClass('daytime');
+$('#outer').removeClass('daytimeReward');
+}
 Template.scoreBar.score = function(){ return Meteor.user().profile.score; }
 Template.scoreBar.popularity = function(){ 
 
@@ -160,9 +214,57 @@ Template.daytime.created = function(){
   $('#outer').removeClass('unpopular');
   $('#outer').removeClass('popular');
   $('#outer').removeClass('neutral');
+  $('#outer').removeClass('daytimeReward');
   $('#outer').addClass('daytime');
 
   
+}
+
+/*----------------------------------------------------------------------------------------*/
+
+Template.dayNotify.created = function(){
+
+  $('#outer').removeClass('unpopular');
+  $('#outer').removeClass('popular');
+  $('#outer').removeClass('neutral');
+  $('#outer').removeClass('daytime');
+  $('#outer').addClass('daytimeReward');
+
+  
+}
+
+
+Template.dayNotify.events({
+
+  'click button#ok':function(){
+
+    $('#notify').slideUp(2000, function(){
+
+      Meteor.users.update(Meteor.user()._id, {$set: {'profile.view': 4}});
+      Meteor.call('clearReward', Meteor.user());
+
+   });
+    event.preventDefault();
+  }
+
+});
+
+Template.dayNotify.notification = function(){
+  return Notifications.findOne({username: Meteor.user().username});
+}
+
+
+/*----------------------------------------------------------------------------------------*/
+
+Template.gameOver.created = function(){
+
+
+  $('#outer').removeClass('unpopular');
+  $('#outer').removeClass('popular');
+  $('#outer').removeClass('neutral');
+  $('#outer').removeClass('daytimeReward');
+  $('#outer').addClass('daytime');
+
 }
 
 
@@ -177,6 +279,7 @@ UI.registerHelper("wait", function(){return (Meteor.user().profile.view == 2) })
 UI.registerHelper("notify", function(){return (Meteor.user().profile.view == 3) });
 UI.registerHelper("daytime", function(){return (Meteor.user().profile.view == 4) });
 UI.registerHelper("dayNotify", function(){return (Meteor.user().profile.view == 5) });
+UI.registerHelper("gameOver", function(){return (Meteor.user().profile.view == 6) });
 
 //others
 function setNextTarget(){

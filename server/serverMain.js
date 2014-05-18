@@ -47,6 +47,7 @@ Meteor.methods({
 		Meteor.users.remove({username: {$ne: "kimonsatan"}}); //remove everyone except the admin
 
 		GameData.insert({item: 'dayNight' , value: 'daytime'});
+		GameData.insert({item: 'scoreIncr' , value: 5});
 
 		for(var i =0; i < uNames.length; i++){
 			Accounts.createUser({username: uNames[i], 
@@ -66,6 +67,7 @@ Meteor.methods({
 
 	startDay: function(){
 
+		Notifications.remove({}); //remove any pending notifications
 		GameData.update({item: 'dayNight' }, {$set: {value: 'daytime'}});
 		Meteor.users.update({'profile.role' : 'player'}, 
 							{$set: {'profile.view': 4}}, 
@@ -76,6 +78,7 @@ Meteor.methods({
 
 	startNight: function(){
 
+		Notifications.remove({}); //remove any pending notifications
 		GameData.update({item: 'dayNight' }, {$set: {value: 'nighttime'}});
 		Meteor.users.update({'profile.role' : 'player'}, 
 							{$set: {'profile.view': 1}}, 
@@ -101,6 +104,9 @@ Meteor.methods({
 																	'profile.status': pstr,
 																	'profile.view': 5}}
 								);
+
+			var n = "you have just been " + ((amount > 0) ? "upped " : "downed " ) + Math.abs(amount) + " points";
+			Notifications.insert({username: users[i].username, message: n, incr: amount});
 
 		}
 
@@ -153,13 +159,16 @@ Meteor.methods({
 
 		}
 
-		var a_ns = actor.profile.score + a_outcome * 2;
+		var scoreIncr = GameData.findOne({item: 'scoreIncr'}).value;
+
+
+		var a_ns = actor.profile.score + a_outcome * parseInt(scoreIncr);
 		a_ns = Math.min(100, Math.max(0,a_ns));
-		var t_incr = t_outcome * 2;
+		var t_incr = t_outcome * parseInt(scoreIncr);
 		var a_pop = getPopularity(a_ns);
 
 		if(t_outcome != 0){
-			var n = actor.username + " just " + action + "d you and " + ((t_outcome > 0) ? "increased" : "decreased" ) +  " your popularity.";
+			var n = actor.username + " just " + action + "d you and " + ((t_outcome > 0) ? "upped" : "downed" ) +  " your popularity.";
 			Notifications.insert({username: target.username, actor: actor.username, message: n, incr: t_incr});
 		}
 
@@ -179,6 +188,22 @@ Meteor.methods({
 		Meteor.users.update({username: notification.username}, {$set: {'profile.score': t_ns}});
 		Meteor.users.update({username: notification.username}, {$set: {'profile.popularity': t_pop, 'profile.status': getStatus(t_pop)}});
 		Notifications.remove(notification._id);
+	},
+
+	clearReward: function(user){
+
+		Notifications.remove({username: user.username});
+	},
+
+	endGame: function(){
+
+		Notifications.remove({});
+		Meteor.users.update({'profile.role' : 'player'}, {$set: {'profile.view': 6}}, {multi: true});
+	},
+
+	changeIncr: function(incr){
+		GameData.update({item: 'scoreIncr'}, {$set: {value: incr}});
+
 	}
 
 

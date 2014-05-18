@@ -32,35 +32,47 @@
 	<div class = "row">
 		<form class="form-inline" role="form">
 			<div class="form-horizontal">
-				<div class="col-xs-4">
+				<div class="col-xs-5">
 					<button type="submit" id="start" class="btn btn-lg btn-success">start game</button>
+					<button type="submit" id="end" class="btn btn-lg btn-warning">end game</button>
 					<button type="submit" id="reset" class="btn btn-lg btn-danger">reset game</button>
 				</div>
-				<div class="col-xs-4">
+				<div class="col-xs-2">
 					<div class="radio dayNight">
 						<label>
-							<input type="radio" name="optionsRadios" id="dayTime" value="dayTime" checked>
+							<input type="radio" name="optionsRadios" id="dayTime" value="dayTime" {{isDaytime}}>
 							day time
 						</label>
 					</div>
 					<div class="radio dayNight">
 						<label>
-							<input type="radio" name="optionsRadios" id="nightTime" value="nightTime">
+							<input type="radio" name="optionsRadios" id="nightTime" value="nightTime" {{isNighttime}}>
 							night time
 						</label>
 					</div>
 				</div>
+
+				<label>incr amount </label>
+				<select class="form-control" id="incr">
+					{{#each increments}}
+						<option {{isIncr}}>{{this}}</option>
+					{{/each}}
+				</select>
 				
 				<label>rewards amount </label>
 				<select class="form-control" id="amount">
+					<option>-30</option>
+					<option>-20</option>
 					<option>-10</option>
 					<option>-5</option>
-					<option>-3</option>
+					<option>-3</option>   
 					<option>-1</option>
-					<option>1</option>
+					<option selected>1</option>
 					<option>3</option>
 					<option>5</option>
 					<option>10</option>
+					<option>20</option>
+					<option>30</option>
 				</select>
 				<button type="submit" id="apply" class="btn btn-lg btn-info">apply</button>
 			</div>

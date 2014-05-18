@@ -47,6 +47,11 @@
 				{{#if dayNotify}}
 					{{>dayNotify}}
 				{{/if}}
+
+
+				{{#if gameOver}}
+					{{>gameOver}}
+				{{/if}}
 				
 			{{else}}
 				{{> hello}}
@@ -96,10 +101,15 @@
 
 <template name="preScreen">
 
-	<div class="text-center">
-		<h1>Welcome</h1>
-		<p>We're almost ready to play ...</p>
-		<p>Remember to keep your username secret.</p>
+	<div class ="row">
+		<br/><br/>
+		<div class="text-center">
+			<img src="whiteLoader.gif" />
+		</div>
+		<div class="text-center">
+			<br/><br/>
+			<h2>{{message}}</h2>
+		</div>
 	</div>
 
 </template>

@@ -44,23 +44,15 @@ Template.adminLogin.loginError = function(){ return Session.get("loginError"); }
 
 /*---------------------------------------------------------------------------------------------*/
 
-Template.admin.created = function(){
 
-  var radio; 
+Template.admin.isDaytime = function(){ if(GameData.findOne({item: 'dayNight' }).value  == 'daytime')return "checked"; }
+Template.admin.isNighttime = function(){ if(GameData.findOne({item: 'dayNight' }).value  == 'nighttime')return "checked"; }
+Template.admin.increments = function(){return [1,2,3,4,5,6,7,8,9,10];}
 
-  /*if(GameData.findOne({item: 'dayNight' }).value  == 'dayTime'){
-    
-    radio = $('#dayTime');
-    radio[0].checked = true;
-    radio.button("refresh");
-  }else{
-    radio = $('#nightTime');
-    radio[0].checked = true;
-    radio.button("refresh");
-  }*/
-
-
+Template.admin.isIncr = function(){ 
+  if(this == GameData.findOne({item: 'scoreIncr'}).value) return "selected"; 
 }
+
 
 Template.admin.events({
 
@@ -69,6 +61,20 @@ Template.admin.events({
     Meteor.call('startGame');
     event.preventDefault();
   },
+
+  'click button#end' : function(){
+
+    var r = window.confirm("are you sure you want to do this ?");
+
+    if(r){
+      Meteor.call('endGame');
+    }else{
+      console.log("aborted");
+    }
+ 
+    event.preventDefault();
+  },
+
 
   'click button#reset' : function(){
 
@@ -112,6 +118,12 @@ Template.admin.events({
     Meteor.call('startNight');
     console.log("night");
 
+  },
+
+  'change #incr':function(){
+
+    Meteor.call('changeIncr', $('select#incr').val());
+    event.preventDefault();
   }
 
 

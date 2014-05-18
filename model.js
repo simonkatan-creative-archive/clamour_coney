@@ -1,7 +1,31 @@
 ////////// Shared code (client and server) //////////
 
-uNames = ["Catchy254", "Funky28", "Smiley20", "Crafty21", "21Hugs"]; //NB globals work differently in meteor
+uNames = [
+"angry11",
+"bunny13",
+"canny17",
+"ditzy19",
+"emoty23",
+"flaky29",
+"grimy31",
+"honey37",
+"irony41",
+"jazzy43",
+"kooky47",
+"loopy53",
+"mucky59",
+"nerdy61",
+"oddly67",
+"pesky71",
+"quaky73",
+"rusty79",
+"shiny83",
+"teeny89"
 
+]; //NB globals work differently in meteor
+
+
+scoreIncr = 5;
 
 Meteor.users.deny({
 	
@@ -19,9 +43,9 @@ GameData = new Meteor.Collection("gameData");
 
 getPopularity = function(score){
 
-	if(score < 25){
+	if(score < 33.3){
 		return 0;
-	}else if(score < 75){
+	}else if(score < 66.6){
 		return 1;
 	}else{
 		return 2;
@@ -44,7 +68,7 @@ getStatus = function(popularity){
 
 getPlayers = function(){
 
-	return Meteor.users.find({'profile.role':'player'}).fetch();
+	return Meteor.users.find({'profile.role':'player'}, {sort: { "profile.status": -1}}).fetch();
 
 }
 
