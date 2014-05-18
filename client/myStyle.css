@@ -58,6 +58,11 @@
 	color: black;
 }
 
+.daytime{
+	background-color: #000; /*orange*/
+	color: gray;
+}
+
 .info{
 	background-color: #666;
 	color: white;

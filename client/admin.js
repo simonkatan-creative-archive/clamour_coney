@@ -1,3 +1,7 @@
+Deps.autorun(function (){
+  Meteor.subscribe('gameData');
+});
+
 Template.adminLogin.events({
 
   'focus #pwInput input':function(){
@@ -40,6 +44,24 @@ Template.adminLogin.loginError = function(){ return Session.get("loginError"); }
 
 /*---------------------------------------------------------------------------------------------*/
 
+Template.admin.created = function(){
+
+  var radio; 
+
+  /*if(GameData.findOne({item: 'dayNight' }).value  == 'dayTime'){
+    
+    radio = $('#dayTime');
+    radio[0].checked = true;
+    radio.button("refresh");
+  }else{
+    radio = $('#nightTime');
+    radio[0].checked = true;
+    radio.button("refresh");
+  }*/
+
+
+}
+
 Template.admin.events({
 
   'click button#start' : function(){
@@ -76,8 +98,21 @@ Template.admin.events({
 
 
     event.preventDefault();
-  }
+  },
 
+  'click .dayNight input#dayTime' : function(){
+
+    Meteor.call('startDay');
+    console.log("day");
+
+  },
+
+  'click .dayNight input#nightTime' : function(){
+
+    Meteor.call('startNight');
+    console.log("night");
+
+  }
 
 
 });

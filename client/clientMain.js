@@ -67,6 +67,7 @@ Template.hello.loginError = function(){ return Session.get("loginError"); }
 
 /*---------------------------------------------------------------------------------------*/
 
+Template.scoreBar.created = function(){$('#outer').removeClass('daytime');}
 Template.scoreBar.score = function(){ return Meteor.user().profile.score; }
 Template.scoreBar.popularity = function(){ 
 
@@ -152,6 +153,19 @@ Template.wait.popular = function(){return (Meteor.user().profile.popularity == 2
 Template.wait.unpopular = function(){return (Meteor.user().profile.popularity == 0)};
 Template.wait.neutral = function(){return Meteor.user().profile.popularity == 1};
 
+/*----------------------------------------------------------------------------------------*/
+
+Template.daytime.created = function(){
+
+  $('#outer').removeClass('unpopular');
+  $('#outer').removeClass('popular');
+  $('#outer').removeClass('neutral');
+  $('#outer').addClass('daytime');
+
+  
+}
+
+
 /*---------------------------------------HELPER FUNCTIONS---------------------------------*/
 
 //navigation
@@ -161,7 +175,8 @@ UI.registerHelper("preScreen", function(){ return (Meteor.user().profile.view ==
 UI.registerHelper("likenope", function(){return (Meteor.user().profile.view == 1) });
 UI.registerHelper("wait", function(){return (Meteor.user().profile.view == 2) });
 UI.registerHelper("notify", function(){return (Meteor.user().profile.view == 3) });
-
+UI.registerHelper("daytime", function(){return (Meteor.user().profile.view == 4) });
+UI.registerHelper("dayNotify", function(){return (Meteor.user().profile.view == 5) });
 
 //others
 function setNextTarget(){

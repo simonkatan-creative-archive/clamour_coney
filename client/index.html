@@ -22,21 +22,30 @@
 
 				{{#if preScreen}}
 					{{>preScreen}}
-				{{else}}
-					{{>scoreBar}}
 				{{/if}}
 
 
 				{{#if notify}}
+					{{>scoreBar}}
 					{{>notify}}
 				{{/if}}
 
 				{{#if likenope}}
+					{{>scoreBar}}
 					{{>likenope}}
 				{{/if}}
 
 				{{#if wait}}
+					{{>scoreBar}}
 					{{>wait}}
+				{{/if}}
+
+				{{#if daytime}}
+					{{>daytime}}
+				{{/if}}
+
+				{{#if dayNotify}}
+					{{>dayNotify}}
 				{{/if}}
 				
 			{{else}}

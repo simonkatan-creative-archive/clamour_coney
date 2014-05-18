@@ -31,14 +31,22 @@ Meteor.publish('notifications', function(){
 
 });
 
+Meteor.publish('gameData', function(){
+
+	return GameData.find({}); 
+
+});
 
 
 Meteor.methods({
 
 	resetGame: function(){
 
+		GameData.remove({});
 		Notifications.remove({});
 		Meteor.users.remove({username: {$ne: "kimonsatan"}}); //remove everyone except the admin
+
+		GameData.insert({item: 'dayNight' , value: 'daytime'});
 
 		for(var i =0; i < uNames.length; i++){
 			Accounts.createUser({username: uNames[i], 
@@ -52,7 +60,26 @@ Meteor.methods({
 
 		Meteor.users.update({'profile.role' : 'player', 
 							'profile.status' : 'pending'}, 
-							{$set: {'profile.view': 1, 'profile.status': 'neutral'}}, {multi: true});
+							{$set: {'profile.view': 4, 'profile.status': 'neutral'}}, {multi: true});
+	
+	},
+
+	startDay: function(){
+
+		GameData.update({item: 'dayNight' }, {$set: {value: 'daytime'}});
+		Meteor.users.update({'profile.role' : 'player'}, 
+							{$set: {'profile.view': 4}}, 
+							{multi: true});
+	
+	},
+
+
+	startNight: function(){
+
+		GameData.update({item: 'dayNight' }, {$set: {value: 'nighttime'}});
+		Meteor.users.update({'profile.role' : 'player'}, 
+							{$set: {'profile.view': 1}}, 
+							{multi: true});
 	
 	},
 
@@ -89,7 +116,7 @@ Meteor.methods({
 		
 		if(action == "like"){
 
-			Meteor.users.update({username: actor.username}, {$incr: {'profile.likes': 1}});
+			Meteor.users.update({username: actor.username}, {$inc: {'profile.likes': 1}});
 
 			if(ap == tp){
 				//if like someone of same status
@@ -107,7 +134,7 @@ Meteor.methods({
 
 		}else if(action == "nope"){
 
-			Meteor.users.update({username: actor.username}, {$incr: {'profile.nopes': 1}});
+			Meteor.users.update({username: actor.username}, {$inc: {'profile.nopes': 1}});
 
 			if(ap == tp){
 				//nope someone of the same status

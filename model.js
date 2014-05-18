@@ -12,6 +12,7 @@ Meteor.users.deny({
 
 
 Notifications = new Meteor.Collection("notifications");
+GameData = new Meteor.Collection("gameData");
 
 //NB
 //functions need to be declared as anonymous globals in meteor to be available universally
